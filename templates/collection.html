@@ -1,0 +1,76 @@
+<!doctype html>
+<head>
+    <title>{{ collection.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script>
+        // toggle visibility of entries by media type
+        function apply_mediatype(mediatype) {
+            console.log(mediatype)
+            switch (mediatype) {
+                case 'all':
+                    sel = 'div.entry'
+                    break
+                case 'movie':
+                    sel = 'div.movie'
+                    break
+                case 'series':
+                    sel = 'div.series,div.season'
+                    break
+            }
+            var entries = document.querySelectorAll('div.entry')
+            for (let entry of entries) {
+                if (entry.matches(sel)) {
+                    entry.parentNode.style.display = ''
+                } else {
+                    entry.parentNode.style.display = 'none'
+                }
+            }
+        }
+        // make sure visibility is consistent with checked radiobutton
+        // when moving through history
+        function apply_checked_mediatype() {
+            var radios = document.querySelectorAll('div.mediatypes input')
+            for (let radio of radios) {
+                if (radio.checked) {
+                    apply_mediatype(radio.id)
+                    break
+                }
+            }
+        }
+        window.onload = apply_checked_mediatype
+    </script>
+    <script src="{{ url_for('static', filename='actions.js') }}"></script>
+</head>
+<body>
+    <div class="header">
+        <nav class="left">
+            <a href="javascript:window.history.back();" title="back">◀</a>
+            <a href="javascript:window.history.forward();" title="forward">▶</a>
+        </nav>
+        <nav class="right">
+            <a href=".." title="up">▲</a>
+            <a href="javascript:refresh()" title="refresh">⟳</a>
+            <a href="javascript:open()" title="open">↦</a>
+        </nav>
+        <div class="details">
+            <h1 title="{{ collection.path }}">{{ collection.title }}</h1>
+        </div>
+        <div class="mediatypes">
+            <input type="radio" name="mediatypes" id="all" onchange="apply_mediatype('all')" checked>
+            <label for="all" id="all_label">all</label>
+            <input type="radio" name="mediatypes" id="movie" onchange="apply_mediatype('movie')">
+            <label for="movie" id="movie_label">Movies</label>
+            <input type="radio" name="mediatypes" id="series" onchange="apply_mediatype('series')">
+            <label for="series" id="series_label">Series</label>
+        </div>
+    </div>
+    <div class="entries">
+        {% for name in collection %}{% set entry = collection[name] %}
+        <!-- {{ entry.path }} -->
+        <a href="{{ name | urlencode }}">
+{{ entry.render_tile() }}
+        </a>
+        {% endfor %}
+    </div>
+</body>

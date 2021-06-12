@@ -1,0 +1,7 @@
+            {% set url = series.info["poster_url"] %}<div class="entry series" style="background-image: url('{{ url }}')">
+                <div class="info">
+                    <p class="title">{{ series.info["name"] }}{% if series.info["name_en"] %}
+                        <br>({{ series.info["name_en"] }}){% endif %}</p>
+                    <p>Series {{ series.info["years"] }}</p>
+                </div>
+            </div>

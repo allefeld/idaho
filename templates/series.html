@@ -1,0 +1,71 @@
+<!doctype html>
+<head>
+    <title>{{ series.info["name"] }}{% if series.info["name_en"] %} ({{ series.info["name_en"] }}){% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="{{ url_for('static', filename='actions.js') }}"></script>
+</head>
+<body>
+    <nav class="left">
+        <a href="javascript:window.history.back();" title="back">◀</a>
+        <a href="javascript:window.history.forward();" title="forward">▶</a>
+    </nav>
+    <nav class="right">
+        <a href=".." title="up">▲</a>
+        <a href="javascript:refresh()" title="refresh">⟳</a>
+        <a href="javascript:open()" title="open">↦</a>
+    </nav>
+    <div class="header">
+        {% set url = series.info["poster_url"] %}<img class="poster" src="{{ url }}">
+        <div class="details">
+            <h1 title="{{ series.path }}">
+                {{ series.info["name"] }}{% if series.info["name_en"] %}
+                <span class="original">({{ series.info["name_en"] }})</span>{% endif %}
+            </h1>
+            <p>Series, {{ series.info["countries"]}} {{ series.info["years"] }}, {{ series.info["runtime"] }} min</p>
+            <dl>
+                <dt>C</dt> <dd>{{ series.info["creators"] }}</dd>
+                <dt>A</dt> <dd>{{ series.info["actors"] }}</dd>
+            </dl>
+            <p>{{ series.info["genres"] }}</p>
+            <p>Ratings:
+                {% set imdb_id = series.info['imdb_id'] %}<a class="imdbRatingPlugin" data-style="p4"
+                    data-title="{{ imdb_id }}"
+                    href="https://www.imdb.com/title/{{ imdb_id }}/" target="_blank">
+                    <img src="https://ia.media-imdb.com/images/G/01/imdb/plugins/rating/images/imdb_37x18.png">
+                    <script id="imdb-rating-api"
+                            src="https://ia.media-imdb.com/images/G/01/imdb/plugins/rating/js/rating.js">
+                    </script>
+                </a>
+                <a href="https://www.themoviedb.org/tv/{{ series.tmdb_id }}" target="_blank">
+                    <img height="18" src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_1-5bdc75aaebeb75dc7ae79426ddd9be3b2be1e342510f8202baf6bffa71d7f5c4.svg">
+                    <span class="rating">{{ series.info['vote_average']}}</span>
+                </a>
+            </p>
+            {% if series.info["number_of_seasons"] > 1 %}<p>{{ series.info["number_of_seasons"] }} seasons</p>{% endif %}
+        </div>
+        <div class="play">
+            <ul>
+            {% for episode in episodes %}
+                <a href="?play={{ loop.index0 }}" title="{{ episode[1] }}"><li>{{ episode[0] }}</li></a>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="entries">
+        {% for name in series %}{% set season = series[name] %}
+{#        <!-- {{ season.path }} -->
+        <a href="{{ name | urlencode }}">
+            {% set url = season.info["poster_url"] %}<div class="entry season" style="background-image: url('{{ url }}')">
+                <div class="info">
+                    <p class="title">{{ season.info['name'] }}</p>
+                </div>
+            </div>
+        </a>#}
+        <!-- {{ season.path }} -->
+        <a href="{{ name | urlencode }}">
+            {{ season.render_tile() }}
+        </a>
+        {% endfor %}
+    </div>
+</body>

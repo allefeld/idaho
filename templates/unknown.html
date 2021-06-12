@@ -1,0 +1,24 @@
+<!doctype html>
+<head>
+    <title>unknown</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="{{ url_for('static', filename='actions.js') }}"></script>
+</head>
+<body>
+    <div class="header">
+        <nav class="left">
+            <a href="javascript:window.history.back();" title="back">◀</a>
+            <a href="javascript:window.history.forward();" title="forward">▶</a>
+        </nav>
+        <nav class="right">
+            <a href=".." title="up">▲</a>
+            <a href="javascript:refresh()" title="refresh">⟳</a>
+            <a href="javascript:open()" title="open">↦</a>
+        </nav>
+        <div class="details">
+            <h1>unknown entry</h1>
+            <p><a href="javascript:open()">{{ unknown.path }}</a></p>
+        </div>
+    </div>
+</body>

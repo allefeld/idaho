@@ -1,0 +1,4 @@
+*.ipynb
+.vscode
+__pycache__
+test

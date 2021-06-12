@@ -1,0 +1,24 @@
+<!doctype html>
+<head>
+    <title>My own private …</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+</head>
+<body>
+    <div class="header">
+        <nav class="left">
+            <a href="javascript:window.history.forward();" title="forward">▶</a>
+        </nav>
+        <div class="details">
+            <h1>My own private …</h1>
+        </div>
+    </div>
+    <div class="entries">
+        {% for name in sources %}{% set source = sources[name] %}
+        <!-- {{ source.path }} -->
+        <a href="{{ name | urlencode }}">
+{{ source.render_tile() }}
+        </a>
+    {% endfor %}
+    </div>
+</body>

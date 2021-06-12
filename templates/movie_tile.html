@@ -1,0 +1,7 @@
+            {% set url = movie.info["poster_url"] %}<div class="entry movie" style="background-image: url('{{ url }}')">
+                <div class="info">
+                    <p class="title">{{ movie.info["title"] }}{% if movie.info["title_en"] %}
+                        <br>({{ movie.info["title_en"] }}){% endif %}</p>
+                    <p>Movie {{ movie.info["year"] }}</p>
+                </div>
+            </div>

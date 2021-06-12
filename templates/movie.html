@@ -1,0 +1,53 @@
+<!doctype html>
+<head>
+    <title>{{ movie.info["title"] }}{% if movie.info["title_en"] %} ({{ movie.info["title_en"] }}){% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+    <script src="{{ url_for('static', filename='actions.js') }}"></script>
+</head>
+<body>
+    <div class="header">
+        <nav class="left">
+            <a href="javascript:window.history.back();" title="back">◀</a>
+            <a href="javascript:window.history.forward();" title="forward">▶</a>
+        </nav>
+        <nav class="right">
+            <a href=".." title="up">▲</a>
+            <a href="javascript:refresh()" title="refresh">⟳</a>
+            <a href="javascript:open()" title="open">↦</a>
+        </nav>
+        {% set url = movie.info["poster_url"] %}<img class="poster" src="{{ url }}">
+        <div class="details">
+            <h1 title="{{ movie.path }}">
+                {{ movie.info["title"] }}{% if movie.info["title_en"] %}
+                <span class="original">({{ movie.info["title_en"] }})</span>{% endif %}
+            </h1>
+            <p>Movie, {{ movie.info["countries"]}} {{ movie.info["year"] }}, {{ movie.info["runtime"] }} min</p>
+            <dl>
+                <dt>D</dt> <dd>{{ movie.info["directors"] }}</dd>
+                <dt>W</dt> <dd>{{ movie.info["writers"] }}</dd>
+                <dt>A</dt> <dd>{{ movie.info["actors"] }}</dd>
+            </dl>
+            <p>{{ movie.info["genres"] }}</p>
+            <p>Ratings:
+                {% set imdb_id = movie.info['imdb_id'] %}<a class="imdbRatingPlugin" data-style="p4"
+                    data-title="{{ imdb_id }}"
+                    href="https://www.imdb.com/title/{{ imdb_id }}/" target="_blank">
+                    <img src="https://ia.media-imdb.com/images/G/01/imdb/plugins/rating/images/imdb_37x18.png">
+                    <script id="imdb-rating-api"
+                            src="https://ia.media-imdb.com/images/G/01/imdb/plugins/rating/js/rating.js">
+                    </script>
+                </a>
+                <a href="https://www.themoviedb.org/movie/{{ movie.tmdb_id }}" target="_blank">
+                    <img height="18" src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_1-5bdc75aaebeb75dc7ae79426ddd9be3b2be1e342510f8202baf6bffa71d7f5c4.svg">
+                    <span class="rating">{{ movie.info['vote_average']}}</span>
+                </a>
+            </p>
+        </div>
+        <div class="play">
+            <ul>
+                <a href="?play"><li>Play</li></a>
+            </ul>
+        </div>
+    </div>
+</body>

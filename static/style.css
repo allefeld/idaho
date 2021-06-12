@@ -1,0 +1,219 @@
+body {
+    font-family: 'Trebuchet MS', 'DejaVu Sans', sans-serif;
+    background-color: rgb(32, 32, 32);
+    color: white;
+    overflow-y: scroll;
+    margin: 0;
+}
+::target-text {
+    background-color: blue;
+    color: pink;
+}
+/* body * { outline-style: solid; outline-width: 1px; } */
+html::-webkit-scrollbar {
+    background-color: rgb(32, 32, 32);
+    width: 5px;
+}
+html::-webkit-scrollbar-thumb {
+    background-color: rgb(64, 64, 64);
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+nav {
+    position: absolute;
+    top: 5px;
+    opacity: 0;
+    padding: 5px 10px;
+    background-color: rgb(64, 64, 64);
+    z-index: 2;
+}
+nav.left {
+    left: 5px;
+}
+nav.right {
+    right: 5px;
+}
+nav:hover {
+    opacity: 1;
+}
+
+div.header {
+    margin: 0;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    position: sticky;
+    top: 0;
+    background-color: inherit;
+    z-index: 1;
+}
+img.poster {
+    margin: 0;
+    margin-right: 50px;
+    vertical-align: top;
+}
+div.details {
+    display: inline-block;
+    margin: 0;
+    width: 50%;
+}
+div.details :last-child {
+    margin-bottom: 0;
+}
+div.play {
+    float: right;
+    margin: 0;
+}
+div.play ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+div.play li {
+    padding: 5px 20px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background-color: rgb(64, 64, 64);
+    margin-bottom: 5px; 
+}
+div.play li:hover {
+    border: 1px solid white;
+}
+div.play a:visited li {
+    color: rgb(128, 128, 128);
+}
+div.header h1 {
+    display: inline-block;
+    margin-top: 0;
+}
+div.mediatypes {
+    float: right;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+div.mediatypes input {
+    display: none;
+}
+div.mediatypes label {
+    user-select: none;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+}
+div.mediatypes label:hover {
+    border: 1px solid white;
+}
+#all:checked ~ #all_label {
+    background-color: rgb(64, 64, 64);
+}
+#movie:checked ~ #movie_label {
+    background-color: rgb(64, 64, 64);
+}
+#series:checked ~ #series_label {
+    background-color: rgb(64, 64, 64);
+}
+
+div.details .imdbRatingPlugin {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    margin: 0;
+}
+div.details .ofTen {
+    display: none;
+}
+div.details img {
+    vertical-align: text-top;
+}
+div.details dl {
+    width: 100%;
+}
+div.details dt {
+    font-weight: bold;
+    width: 1.5em;
+    display: inline-block;
+}
+div.details dd {
+    display: inline;
+    margin: 0;
+}
+div.details dd:after {
+    content: '\A';
+    white-space: pre;
+}
+div.details hr {
+    width: 200px;
+    margin-left: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: inherit;
+    height: 1px;
+    border: 0;
+}
+
+/* source & series entries */
+/* grid cell size is 185 x 278, TMDb's 'w185' poster size */
+div.entries {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, 185px );
+    margin: 0;
+    justify-content: center;
+    gap: 10px;
+}
+div.entry {
+    width: 185px;
+    height: 278px;
+    background-repeat: no-repeat;
+    /* background-color: rgb(64, 64, 64); */
+    background-position: center center;
+}
+div.info {
+    opacity: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background-color: rgb(32, 32, 32, 0.5);
+}
+div.entry:hover div.info {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+}
+div.entry * {
+    margin-top: 0;
+    margin-bottom: 0.5em;
+}
+p.title {
+    font-weight: bold;
+}
+div.entry.collection {
+    box-sizing: border-box;
+    display: grid;
+    background-color: rgb(32, 32, 64);
+}
+div.entry.collection:hover {
+    border: 2px solid white;
+}
+div.entry.collection h2 {
+    margin: auto;
+    text-align: center;
+}
+div.entry.unknown {
+    box-sizing: border-box;
+    display: grid;
+    background-color: rgb(64, 32, 32);
+}
+div.entry.unknown:hover {
+    border: 2px solid white;
+}
+div.entry.unknown h3 {
+    margin: auto;
+}
