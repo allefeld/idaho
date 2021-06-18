@@ -5,10 +5,6 @@ body {
     overflow-y: scroll;
     margin: 0;
 }
-::target-text {
-    background-color: blue;
-    color: pink;
-}
 /* body * { outline-style: solid; outline-width: 1px; } */
 html::-webkit-scrollbar {
     background-color: rgb(32, 32, 32);
@@ -95,9 +91,6 @@ div.mediatypes {
     margin-bottom: auto;
 }
 
-div.mediatypes input {
-    display: none;
-}
 div.mediatypes label {
     user-select: none;
     padding: 5px;
@@ -110,14 +103,19 @@ div.mediatypes label {
 div.mediatypes label:hover {
     border: 1px solid white;
 }
-#all:checked ~ #all_label {
-    background-color: rgb(64, 64, 64);
+#all:checked ~ div #all_label,
+#movie:checked ~ div #movie_label,
+#series:checked ~ div #series_label,
+#collection:checked ~ div #collection_label {
+        background-color: rgb(64, 64, 64);
 }
-#movie:checked ~ #movie_label {
-    background-color: rgb(64, 64, 64);
+input.filter {
+    display: none;
 }
-#series:checked ~ #series_label {
-    background-color: rgb(64, 64, 64);
+#movie:checked ~ div .entry:not(.movie),
+#series:checked ~ div .entry:not(.series, .season),
+#collection:checked ~ div .entry:not(.collection) {
+    display: none;
 }
 
 div.details .imdbRatingPlugin {
@@ -168,11 +166,11 @@ div.entries {
     justify-content: center;
     gap: 10px;
 }
-div.entry {
+.entry {
     width: 185px;
     height: 278px;
+    box-sizing: border-box;
     background-repeat: no-repeat;
-    /* background-color: rgb(64, 64, 64); */
     background-position: center center;
 }
 div.info {
@@ -183,37 +181,30 @@ div.info {
     padding: 10px;
     background-color: rgb(32, 32, 32, 0.5);
 }
-div.entry:hover div.info {
+div.info h2 {
+    font-size: 1.3em;
+}
+.entry:hover div.info {
     opacity: 1;
     backdrop-filter: blur(2px);
 }
-div.entry * {
+.entry * {
     margin-top: 0;
     margin-bottom: 0.5em;
 }
 p.title {
     font-weight: bold;
 }
-div.entry.collection {
-    box-sizing: border-box;
-    display: grid;
+.entry.collection {
+    border: 2px solid transparent;
     background-color: rgb(32, 32, 64);
 }
-div.entry.collection:hover {
+.entry.collection div.info {
+    opacity: 1;
+}
+.entry.collection:hover {
     border: 2px solid white;
 }
-div.entry.collection h2 {
-    margin: auto;
-    text-align: center;
-}
-div.entry.unknown {
-    box-sizing: border-box;
-    display: grid;
+.entry.unknown {
     background-color: rgb(64, 32, 32);
-}
-div.entry.unknown:hover {
-    border: 2px solid white;
-}
-div.entry.unknown h3 {
-    margin: auto;
 }

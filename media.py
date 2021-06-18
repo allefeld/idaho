@@ -7,7 +7,6 @@ from statistics import median
 
 from yaml import unsafe_load, dump, YAMLObject
 import tmdbsimple as tmdb
-from flask import render_template, Markup
 
 import cfg
 
@@ -31,8 +30,6 @@ class Entry(YAMLObject):
         # invalidate info
         if hasattr(self, 'info'):
             self.info = None
-        if hasattr(self, 'entries'):
-            self.entries = dict()
         # recreate info
         self.add_info()
         # save updated data
@@ -59,12 +56,6 @@ class Unknown(Entry):
 
     def add_info(self):
         pass
-
-    def render_tile(self):
-        return Markup(render_template('unknown_tile.html', unknown=self))
-
-    def render(self):
-        return render_template('unknown.html', unknown=self)
 
     def __repr__(self):
         return f'Unknown(path="{self.path}")'
@@ -111,12 +102,6 @@ class Movie(Entry):
             'vote_average': movie.vote_average
         }
 
-    def render_tile(self):
-        return Markup(render_template('movie_tile.html', movie=self))
-
-    def render(self):
-        return render_template('movie.html', movie=self)
-
     def play(self, _):
         if os.path.isfile(self.path):
             mpv_play(self.path)
@@ -131,13 +116,15 @@ class Movie(Entry):
                 fn = os.path.join(self.path, n)
                 if os.path.isfile(fn):
                     s = os.path.getsize(fn)
+                    print('FILE', s, '\t', fn)
                     if s > size:
                         size = s
                         filename = fn
                 if os.path.isdir(fn):
+                    print('DIR', fn)
                     subs.append(n)
             if filename is not None:
-                mpv_play(self.path, sub_auto_all=True, subs=subs)
+                mpv_play(filename, sub_auto_all=True, subs=subs)
                 return
 
     def __repr__(self):
@@ -152,8 +139,11 @@ class Season(Entry):
         self.season_number = season_number
         self.path = path
         self.info = None
+        self.episodes = []
 
     def add_info(self):
+        # scan for episodes
+        self.episodes = scan_episodes(self.path, self.season_number)
         # create uid and use it to check whether `info` is up-to-date
         uid = f'S{self.tmdb_id}s{self.season_number}'
         if (self.info is not None) and (self.info['uid'] == uid):
@@ -189,19 +179,17 @@ class Season(Entry):
             'series':     series
         }
 
-    def render_tile(self):
-        return Markup(render_template('season_tile.html', season=self))
-
-    def render(self):
-        episodes = scan_episodes(self.path, self.season_number)
-        return render_template('season.html', season=self, episodes=episodes)
-
     def play(self, episode_index):
-        episodes = scan_episodes(self.path, self.season_number)
         episode_index = int(episode_index)
-        filename = os.path.join(self.path, episodes[episode_index][1])
+        filename = os.path.join(self.path, self.episodes[episode_index][1])
         mpv_play(filename)
         return
+
+    def __getstate__(self):
+        # prevent `episodes` from being stored
+        state = self.__dict__.copy()
+        del state['episodes']
+        return state
 
     def __repr__(self):
         return (f'Season(tmdb_id={self.tmdb_id}, '
@@ -255,18 +243,35 @@ class Series(Entry, Entries):
         self.path = path
         self.info = None
         self.entries = dict()
+        self.episodes = []
 
     def add_info(self):
+        # separate entries into seasons and movies
+        seasons = {name: entry for name, entry in self.entries.items()
+                   if isinstance(entry, Season)}
+        movies = {name: entry for name, entry in self.entries.items()
+                  if isinstance(entry, Movie)}
         # scan for seasons
-        self.entries = scan_folder(
-            self.path, self.entries,
+        seasons = scan_folder(
+            self.path, seasons,
             [lambda name, path:
                 probe_processed_folder_season(name, path, self.tmdb_id)],
-            [probe_processed_file_movie])
-        # if there are no season folders, ignore files scanned as movies
-        has_seasons = any(isinstance(entry, Season)
-                          for entry in self.entries.values())
-        if not has_seasons:
+            [])
+        if len(seasons) > 0:
+            # if there are seasons, scan for movies
+            movies = scan_folder(
+                self.path, movies,
+                [],
+                [probe_processed_file_movie])
+            # store seasons and movies together as entries
+            self.entries = seasons
+            self.entries.update(movies)
+            # no episodes
+            self.episodes = []
+        else:
+            # if there are no seasons (Miniseries), scan for episodes
+            self.episodes = scan_episodes(self.path, 1)
+            # no seasons and movies
             self.entries = dict()
         # create uid and use it to check whether `info` is up-to-date
         uid = f'S{self.tmdb_id}'
@@ -276,23 +281,17 @@ class Series(Entry, Entries):
         self.info, _ = get_series_info(self.tmdb_id)
         self.info['uid'] = uid
 
-    def render_tile(self):
-        return Markup(render_template('series_tile.html', series=self))
-
-    def render(self):
-        # scan files as episodes only if there are no seasons
-        if len(self.entries) == 0:
-            episodes = scan_episodes(self.path, 1)
-        else:
-            episodes = []
-        return render_template('series.html', series=self, episodes=episodes)
-
     def play(self, episode_index):
-        episodes = scan_episodes(self.path, 1)
         episode_index = int(episode_index)
-        filename = os.path.join(self.path, episodes[episode_index][1])
+        filename = os.path.join(self.path, self.episodes[episode_index][1])
         mpv_play(filename)
         return
+
+    def __getstate__(self):
+        # prevent `episodes` from being stored
+        state = self.__dict__.copy()
+        del state['episodes']
+        return state
 
     def __repr__(self):
         return (f'Series(tmdb_id={self.tmdb_id}, path="{self.path}")')
@@ -322,12 +321,6 @@ class Collection(Entry, Entries):
         else:
             date = '?'
         self.info = {'date': date}
-
-    def render(self):
-        return render_template('collection.html', collection=self)
-
-    def render_tile(self):
-        return Markup(render_template('collection_tile.html', collection=self))
 
     def __repr__(self):
         return f'Collection(path="{self.path}", title="{self.title}")'
@@ -394,9 +387,6 @@ class Sources(Entries):
         for name in self.entries:
             self.entries[name].save()
         print('saved entries files')
-
-    def render(self):
-        return render_template('sources.html', sources=self)
 
     def __repr__(self):
         return 'Sources()'

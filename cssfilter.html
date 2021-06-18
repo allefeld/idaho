@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+div.entry {
+    width: 185px;
+    height: 278px;
+    color: white;
+    background-color: black;
+    display: inline-block;
+    border: 1px solid blue;
+}
+div.info {
+    background-color: black;
+    opacity: 0.7;
+    font-weight: bold;
+}
+#movie:checked ~ a .entry:not(.movie),
+#series:checked ~ a .entry:not(.series, .season),
+#collection:checked ~ a .entry:not(.collection) {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+    <input type="radio" id="all" name="categories" checked>
+    <label for="all">all</label>
+    <input type="radio" id="movie" name="categories">
+    <label for="movie">Movies</label>
+    <input type="radio" id="series" name="categories">
+    <label for="series">Series</label>
+    <input type="radio" id="collection" name="categories">
+    <label for="collection">Collections</label>
+
+        <!-- /home/ca/Collection/Movies/Edwards - The Party - 1968.mp4 -->
+        <a href="Edwards%20-%20The%20Party%20-%201968.mp4">
+            <div class="entry movie" style="background-image: url('http://image.tmdb.org/t/p/w185/pC6FB4fLIVRCpMzIbUf1xOVobmz.jpg')">
+                <div class="info">
+                    <p class="title">The Party</p>
+                    <p>Movie 1968</p>
+                </div>
+            </div>
+        </a>
+        
+        <!-- /home/ca/Collection/Movies/Living Dead collection -->
+        <a href="Living%20Dead%20collection">
+            <div class="entry collection">
+                <h2>Living Dead</h2>
+            </div>
+        </a>
+        
+        <!-- /home/ca/Collection/Movies/Haller - The Dunwich Horror - 1970.avi -->
+        <a href="Haller%20-%20The%20Dunwich%20Horror%20-%201970.avi">
+            <div class="entry movie" style="background-image: url('http://image.tmdb.org/t/p/w185/q2KoYMsXi8LHW3ApNimgzWEx2dP.jpg')">
+                <div class="info">
+                    <p class="title">The Dunwich Horror</p>
+                    <p>Movie 1970</p>
+                </div>
+            </div>
+        </a>
+        
+        <!-- /home/ca/Collection/Series/Remington Steele -->
+        <a href="Remington%20Steele">
+            <div class="entry series" style="background-image: url('http://image.tmdb.org/t/p/w185/3UGDVrdwavyU0WIddhZf4eov6yv.jpg')">
+                <div class="info">
+                    <p class="title">Remington Steele</p>
+                    <p>Series 1982—1987</p>
+                </div>
+            </div>
+        </a>
+        
+        <!-- /home/ca/Collection/Series/Æon Flux -->
+        <a href="%C3%86on%20Flux">
+            <div class="entry series" style="background-image: url('http://image.tmdb.org/t/p/w185/mWJjrJiJCc9eHsudsYaRsFm8jUU.jpg')">
+                <div class="info">
+                    <p class="title">Ӕon Flux</p>
+                    <p>Series 1991—1995</p>
+                </div>
+            </div>
+        </a>
+        
+        <!-- /home/ca/Store/transmission/completed/Lexx.1997.S01.DVDRip.DD2.0.x264-panos[rartv] -->
+        <a href="Lexx.1997.S01.DVDRip.DD2.0.x264-panos%5Brartv%5D">
+            <div class="entry season" style="background-image: url('http://image.tmdb.org/t/p/w185http://image.tmdb.org/t/p/w185/y27IedK7PQB9J5E91oyUEEK3kLZ.jpg')">
+                <div class="info">
+                    <p class="title">Lexx</p>
+                    <p>Series 1997–2002</p>
+                    <p class="title">Season 1</p>
+                    <p>1997</p>
+                </div>
+            </div>
+        </a>
+
+
+</body>
+</html>

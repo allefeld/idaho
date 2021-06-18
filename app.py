@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
-import os
-import webbrowser
-
-from flask import Flask, request
+from flask import Flask, request, render_template
 from werkzeug.exceptions import NotFound
 from media import Sources
 
@@ -12,13 +9,10 @@ app = Flask(__name__)
 
 sources = Sources.get()
 
-url = f'http://{os.environ["FLASK_RUN_HOST"]}:{os.environ["FLASK_RUN_PORT"]}/'
-webbrowser.open(url)
-
 
 @app.route('/')
 def show_main():
-    return sources.render()
+    return render_template('sources.html', sources=sources)
 
 
 @app.route('/<path:path>/')
@@ -29,7 +23,7 @@ def show_path(path):
         if part not in entry:
             raise NotFound(f'Cannot find "{part}".')
         entry = entry[part]
-    # check for arguments
+    # check for arguments and trigger actions
     if len(request.args) > 0:
         # perform actions in response
         for key, value in request.args.items():
@@ -48,7 +42,17 @@ def show_path(path):
                 # `fetch`, because then the URL is not entered in the history,
                 # so we can't use `a:visited` to mark played items. We could
                 # use `flask.redirect`, but then the history would be messed
-                # up. `url/` → `url/?play` → `url/`, so that going back in
+                # up, `url/` → `url/?play` → `url/`, so that going back in
                 # history does not move before `url/`. Solution: Have a
                 # response that triggers going back to the previous page by JS.
-    return entry.render()
+    # render entry
+    type = entry.__class__.__name__
+    if type in ['Collection', 'Source']:
+        return render_template('collection.html', collection=entry)
+    elif type == 'Movie':
+        return render_template('movie.html', movie=entry)
+    elif type == 'Series':
+        return render_template('series.html', series=entry)
+    elif type == 'Season':
+        return render_template('season.html', season=entry)
+    return render_template('unknown.html', unknown=entry)

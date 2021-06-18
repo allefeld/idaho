@@ -48,7 +48,7 @@
         </div>
         <div class="play">
             <ul>
-            {% for episode in episodes %}
+            {% for episode in season.episodes %}
                 <a href="?play={{ loop.index0 }}" title="{{ episode[1] }}"><li>{{ episode[0] }}</li></a>
             {% endfor %}
             </ul>

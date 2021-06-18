@@ -46,26 +46,15 @@
         </div>
         <div class="play">
             <ul>
-            {% for episode in episodes %}
+            {% for episode in series.episodes %}
                 <a href="?play={{ loop.index0 }}" title="{{ episode[1] }}"><li>{{ episode[0] }}</li></a>
             {% endfor %}
             </ul>
         </div>
     </div>
     <div class="entries">
-        {% for name in series %}{% set season = series[name] %}
-{#        <!-- {{ season.path }} -->
-        <a href="{{ name | urlencode }}">
-            {% set url = season.info["poster_url"] %}<div class="entry season" style="background-image: url('{{ url }}')">
-                <div class="info">
-                    <p class="title">{{ season.info['name'] }}</p>
-                </div>
-            </div>
-        </a>#}
-        <!-- {{ season.path }} -->
-        <a href="{{ name | urlencode }}">
-            {{ season.render_tile() }}
-        </a>
-        {% endfor %}
+{% for name in series %}{% set entry = series[name] %}
+{% include 'entry_tile.html' %}
+{%- endfor %}
     </div>
 </body>
