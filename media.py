@@ -15,6 +15,15 @@ tmdb.API_KEY = cfg.TMDb_API_key
 search = tmdb.Search()
 IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/w185'
 
+# mapping to unify TMDb's movie and TV genres for filter
+genre_filter_map = {
+    'Adventure':        'Action & Adventure',
+    'Fantasy':          'Sci-Fi & Fantasy',
+    'Action':           'Action & Adventure',
+    'Science Fiction':  'Sci-Fi & Fantasy',
+    'War':              'War & Politics',
+}
+
 
 class Entry(YAMLObject):
     def open(self):
@@ -35,6 +44,12 @@ class Entry(YAMLObject):
         # save updated data
         Sources.get().save_all()
 
+    def date(self):
+        return '?'
+
+    def type(self):
+        return self.__class__.__name__
+
     def __repr__(self):
         return f'Entry(path="{self.path}")'
 
@@ -52,10 +67,12 @@ class Unknown(Entry):
 
     def __init__(self, path):
         self.path = path
-        self.info = {'date': '?'}
 
     def add_info(self):
         pass
+
+    def filter_genres(self):
+        return {}
 
     def __repr__(self):
         return f'Unknown(path="{self.path}")'
@@ -78,6 +95,10 @@ class Movie(Entry):
         movie = tmdb.Movies(self.tmdb_id)
         movie.info()
         movie.credits()
+        # augmented genres
+        genres = [genre['name'] for genre in movie.genres]
+        if movie.adult:
+            genres.append('Adult')
         # add `info`
         self.info = {
             'uid':          uid,
@@ -93,7 +114,7 @@ class Movie(Entry):
                                       in ['Writer', 'Screenplay']),
             'actors':       ', '.join(person['name'] for person in movie.cast
                                       if person['order'] < 3),
-            'genres':       ', '.join(genre['name'] for genre in movie.genres),
+            'genres':       genres,
             'runtime':      movie.runtime,
             'countries':    '/'.join(country['iso_3166_1'] for country
                                      in movie.production_countries),
@@ -101,6 +122,13 @@ class Movie(Entry):
             'imdb_id':      movie.external_ids()['imdb_id'],
             'vote_average': movie.vote_average
         }
+
+    def date(self):
+        return self.info['date']
+
+    def filter_genres(self):
+        return {genre_filter_map.get(genre, genre)
+                for genre in self.info['genres']}
 
     def play(self, _):
         if os.path.isfile(self.path):
@@ -179,6 +207,13 @@ class Season(Entry):
             'series':     series
         }
 
+    def date(self):
+        return self.info['date']
+
+    def filter_genres(self):
+        return {genre_filter_map.get(genre, genre)
+                for genre in self.info['series']['genres']}
+
     def play(self, episode_index):
         episode_index = int(episode_index)
         filename = os.path.join(self.path, self.episodes[episode_index][1])
@@ -222,8 +257,7 @@ def get_series_info(tmdb_id):
                                        for person in series.created_by),
         'actors':            ', '.join(person['name'] for person in series.cast
                                        if person['order'] < 3),
-        'genres':            ', '.join(genre['name']
-                                       for genre in series.genres),
+        'genres':            [genre['name'] for genre in series.genres],
         'countries':         '/'.join(country['iso_3166_1'] for country
                                       in series.production_countries),
         'runtime':           (median(series.episode_run_time)
@@ -263,9 +297,12 @@ class Series(Entry, Entries):
                 self.path, movies,
                 [],
                 [probe_processed_file_movie])
-            # store seasons and movies together as entries
-            self.entries = seasons
-            self.entries.update(movies)
+            # put seasons and movies together as entries, sorted
+            entries = seasons
+            entries.update(movies)
+            entries = dict(sorted(entries.items(),
+                                  key=lambda item: item[1].date()))
+            self.entries = entries
             # no episodes
             self.episodes = []
         else:
@@ -280,6 +317,13 @@ class Series(Entry, Entries):
         # if not, get information from TMDb
         self.info, _ = get_series_info(self.tmdb_id)
         self.info['uid'] = uid
+
+    def date(self):
+        return self.info['date']
+
+    def filter_genres(self):
+        return {genre_filter_map.get(genre, genre)
+                for genre in self.info['genres']}
 
     def play(self, episode_index):
         episode_index = int(episode_index)
@@ -303,7 +347,6 @@ class Collection(Entry, Entries):
     def __init__(self, path, title):
         self.path = path
         self.title = title
-        self.info = None
         self.entries = dict()
 
     def add_info(self):
@@ -315,12 +358,19 @@ class Collection(Entry, Entries):
         file_probes = [probe_processed_file_movie]
         self.entries = scan_folder(self.path, self.entries,
                                    folder_probes, file_probes)
-        # add `info`
+
+    def date(self):
         if len(self.entries) > 0:
-            date = list(self.entries.values())[0].info['date']
+            # date from first entry
+            return list(self.entries.values())[0].info['date']
         else:
-            date = '?'
-        self.info = {'date': date}
+            return '?'
+
+    def filter_genres(self):
+        fg = set()
+        for entry in self.entries.values():
+            fg.update(entry.filter_genres())
+        return fg
 
     def __repr__(self):
         return f'Collection(path="{self.path}", title="{self.title}")'
@@ -338,7 +388,7 @@ class Source(Collection):
 
     def load(self):
         # determine name of entries file
-        entries_file = os.path.join(self.path, '.media.yaml')
+        entries_file = os.path.join(self.path, '.idaho.yaml')
         # load entries from YAML file if it exists
         try:
             with open(entries_file, 'r') as f:
@@ -349,7 +399,7 @@ class Source(Collection):
 
     def save(self):
         # determine name of entries file
-        entries_file = os.path.join(self.path, '.media.yaml')
+        entries_file = os.path.join(self.path, '.idaho.yaml')
         # make backup if file exists
         if os.path.exists(entries_file):
             os.rename(entries_file, entries_file + '.bk')
@@ -600,7 +650,7 @@ def scan_folder(path, old_entries, folder_probes, file_probes):
 
     # sort entries
     entries = dict(sorted(entries.items(),
-                          key=lambda item: item[1].info['date']))
+                          key=lambda item: item[1].date()))
 
     return entries
 

@@ -28,7 +28,7 @@
                 <dt>W</dt> <dd>{{ movie.info["writers"] }}</dd>
                 <dt>A</dt> <dd>{{ movie.info["actors"] }}</dd>
             </dl>
-            <p>{{ movie.info["genres"] }}</p>
+            <p>{{ ', '.join(movie.info["genres"]) }}</p>
             <p>Ratings:
                 {% set imdb_id = movie.info['imdb_id'] %}<a class="imdbRatingPlugin" data-style="p4"
                     data-title="{{ imdb_id }}"

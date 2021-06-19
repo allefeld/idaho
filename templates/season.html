@@ -27,7 +27,7 @@
                 <dt>C</dt> <dd>{{ series["creators"] }}</dd>
                 <dt>A</dt> <dd>{{ series["actors"] }}</dd>
             </dl>
-            <p>{{ series["genres"] }}</p>
+            <p>{{ ', '.join(series["genres"]) }}</p>
             <p>Ratings:
                 {% set imdb_id = series['imdb_id'] %}<a class="imdbRatingPlugin" data-style="p4"
                     data-title="{{ imdb_id }}"

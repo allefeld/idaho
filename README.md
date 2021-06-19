@@ -1,6 +1,6 @@
 # Idaho
 
-A media browser.
+My own private media browser.
 
 Start with `flask run` from the installation directory.
 
