@@ -1,7 +1,7 @@
         <!-- {{ entry.path }} -->
 {%- if entry.type() in ['Collection', 'Source'] %}{% set collection = entry %}
         <div class="entry collection"
-                data-genres="{{ '|'.join(collection.filter_genres()) }}">
+                data-genres="{{ collection.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">
                     <p>{{ entry.type() }}</p>
@@ -11,7 +11,7 @@
         </div>
 {% elif entry.type() == 'Movie' %}{% set movie = entry %}{% set url = movie.info["poster_url"] %}
         <div class="entry movie" style="background-image: url('{{ url }}')"
-                data-genres="{{ '|'.join(movie.filter_genres()) }}">
+                data-genres="{{ movie.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">
                     <h2>{{ movie.info["title"] }}{% if movie.info["title_en"] %}
@@ -22,7 +22,7 @@
         </div>
 {% elif entry.type() == 'Series' %}{% set series = entry %}{% set url = series.info["poster_url"] %}
         <div class="entry series" style="background-image: url('{{ url }}')"
-                data-genres="{{ '|'.join(series.filter_genres()) }}">
+                data-genres="{{ series.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">
                     <h2>{{ series.info["name"] }}{% if series.info["name_en"] %}
@@ -33,7 +33,7 @@
         </div>
 {% elif entry.type() == 'Season' %}{% set season = entry %}{% set url = season.info["poster_url"] %}
         <div class="entry season" style="background-image: url('{{ url }}')"
-                data-genres="{{ '|'.join(season.filter_genres()) }}">
+                data-genres="{{ season.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">{% set series = season.info["series"] %}
                     <h2>{{ series["name"] }}{% if series["name_en"] %}

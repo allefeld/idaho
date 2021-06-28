@@ -4,12 +4,34 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
     <script src="{{ url_for('static', filename='actions.js') }}"></script>
+    <style>
+{%- for genre in collection.filter_genres() %}
+        #G{{ genre | gid }}:checked ~ div #GL{{ genre | gid }},
+{%- endfor %}
+        #Gall:checked ~ div #GLall {
+            background-color: rgb(64, 64, 64);
+            display: block;
+        }
+{%- set comma = joiner(", ") %}
+{%- for genre in collection.filter_genres() %}{{ comma() }}
+        #G{{ genre | gid }}:checked ~ div .entry:not([data-genres~='{{ genre | gid }}'])
+{%- endfor %} {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-    <input class="filter" type="radio" name="mediatypes" id="all" checked>
-    <input class="filter" type="radio" name="mediatypes" id="movie">
-    <input class="filter" type="radio" name="mediatypes" id="series">
-    <input class="filter" type="radio" name="mediatypes" id="collection">
+    <input class="filter" type="radio" name="genres" id="Gall" checked>
+{%- for genre in collection.filter_genres() %}
+    <input class="filter" type="radio" name="genres" id="G{{ genre | gid }}">
+{%- endfor %}
+
+    <input class="filter" type="radio" name="mediatypes" id="Mall" checked>
+    <input class="filter" type="radio" name="mediatypes" id="Mmovie">
+    <input class="filter" type="radio" name="mediatypes" id="Mseries">
+    <input class="filter" type="radio" name="mediatypes" id="Mcollection">
+
     <div class="header">
         <nav class="left">
             <a href="javascript:window.history.back();" title="back">◀</a>
@@ -23,16 +45,27 @@
         <div class="details">
             <h1 title="{{ collection.path }}">{{ collection.title }}</h1>
         </div>
+        <div class="genres">
+            <label class="placeholder">&nbsp;</label>
+            <div class="dropdown">
+                <label for="Gall" id="GLall">all genres</label>
+{%- for genre in collection.filter_genres() %}
+                <label for="G{{ genre | gid }}" id="GL{{ genre | gid }}">{{ genre }}</label>
+{%- endfor %}
+            </div>
+        </div>
         <div class="mediatypes">
-            <label for="all" id="all_label">all</label>
-            <label for="movie" id="movie_label">Movies</label>
-            <label for="series" id="series_label">Series</label>
-            <label for="collection" id="collection_label">Collections</label>
+            <label for="Mall" id="MLall">all types</label>
+            <label for="Mmovie" id="MLmovie">Movies</label>
+            <label for="Mseries" id="MLseries">Series</label>
+            <label for="Mcollection" id="MLcollection">Collections</label>
         </div>
     </div>
+
     <div class="entries">
 {% for name in collection %}{% set entry = collection[name] %}
 {% include 'entry_tile.html' %}
 {%- endfor %}
     </div>
+
 </body>

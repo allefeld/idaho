@@ -1,7 +1,9 @@
 # TODO
 
-filtering:
--   filter / search. genres, directors, ... maybe Genre + fulltext, info in page but hidden
+"everything" meta collection
+
+search-based collection
+
 
 consolidate repetitive HTML by using Jinja functionality
 move `render`, `render_tile` functionality to `app.py`?

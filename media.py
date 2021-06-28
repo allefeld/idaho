@@ -370,7 +370,7 @@ class Collection(Entry, Entries):
         fg = set()
         for entry in self.entries.values():
             fg.update(entry.filter_genres())
-        return fg
+        return sorted(fg)
 
     def __repr__(self):
         return f'Collection(path="{self.path}", title="{self.title}")'

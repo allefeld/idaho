@@ -2,6 +2,7 @@
 
 from flask import Flask, request, render_template
 from werkzeug.exceptions import NotFound
+from jinja2 import environment
 from media import Sources
 
 
@@ -56,3 +57,12 @@ def show_path(path):
     elif type == 'Season':
         return render_template('season.html', season=entry)
     return render_template('unknown.html', unknown=entry)
+
+
+def genre_id(genre):
+    # translate genre string to CSS-safe string
+    return genre.translate(str.maketrans('', '', ' &-'))
+
+
+# register `genre_id` as jinja filter `gid`
+app.jinja_env.filters['gid'] = genre_id

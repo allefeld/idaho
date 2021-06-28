@@ -17,6 +17,28 @@ a {
     text-decoration: none;
     color: inherit;
 }
+input.filter {
+    display: none;
+}
+
+/*
+    header
+*/
+
+div.header {
+    margin: 0;
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    position: sticky;
+    top: 0;
+    background-color: inherit;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
 nav {
     position: absolute;
     top: 5px;
@@ -35,33 +57,29 @@ nav:hover {
     opacity: 1;
 }
 
-div.header {
-    margin: 0;
-    padding-left: 100px;
-    padding-right: 100px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-    position: sticky;
-    top: 0;
-    background-color: inherit;
-    z-index: 1;
-}
 img.poster {
     margin: 0;
     margin-right: 50px;
-    vertical-align: top;
+    margin-bottom: auto;
+    flex: none;
 }
+
 div.details {
-    display: inline-block;
     margin: 0;
-    width: 50%;
+    margin-right: 50px;
+    flex: auto;
+}
+div.details h1 {
+    margin-top: 0;
+    width: fit-content;
 }
 div.details :last-child {
     margin-bottom: 0;
 }
+
 div.play {
-    float: right;
     margin: 0;
+    flex: none;
 }
 div.play ul {
     margin: 0;
@@ -70,7 +88,6 @@ div.play ul {
 }
 div.play li {
     padding: 5px 20px;
-    box-sizing: border-box;
     border: 1px solid transparent;
     background-color: rgb(64, 64, 64);
     margin-bottom: 5px; 
@@ -81,40 +98,65 @@ div.play li:hover {
 div.play a:visited li {
     color: rgb(128, 128, 128);
 }
-div.header h1 {
-    display: inline-block;
-    margin-top: 0;
-}
-div.mediatypes {
-    float: right;
+
+div.genres   {
     margin-top: auto;
-    margin-bottom: auto;
+    flex: none;
+    margin-right: 50px;
+    background-color: inherit;
+    position: relative;
+}
+div.genres .dropdown {
+    background-color: inherit;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    display: inline-block;
+    width: 100%;
+}
+div.genres label {
+    user-select: none;
+    padding: 5px;
+    border: 1px solid transparent;
+    display: none;
+    width: 150px;
+    text-align: center;
+}
+div.genres label:hover {
+    border: 1px solid white;
+}
+div.genres:hover label,
+div.genres label.placeholder {
+    display: block;
+}
+div.genres:hover .dropdown {
+    box-shadow: 1px 1px black, -1px -1px black;
 }
 
+div.mediatypes {
+    margin-top: auto;
+    flex: none;
+}
 div.mediatypes label {
     user-select: none;
     padding: 5px;
-    box-sizing: border-box;
     border: 1px solid transparent;
-    width: 100px;
+    width: 80px;
     display: inline-block;
     text-align: center;
 }
 div.mediatypes label:hover {
     border: 1px solid white;
 }
-#all:checked ~ div #all_label,
-#movie:checked ~ div #movie_label,
-#series:checked ~ div #series_label,
-#collection:checked ~ div #collection_label {
+#Mall:checked ~ div #MLall,
+#Mmovie:checked ~ div #MLmovie,
+#Mseries:checked ~ div #MLseries,
+#Mcollection:checked ~ div #MLcollection {
         background-color: rgb(64, 64, 64);
 }
-input.filter {
-    display: none;
-}
-#movie:checked ~ div .entry:not(.movie),
-#series:checked ~ div .entry:not(.series, .season),
-#collection:checked ~ div .entry:not(.collection) {
+#Mmovie:checked ~ div .entry:not(.movie),
+#Mseries:checked ~ div .entry:not(.series, .season),
+#Mcollection:checked ~ div .entry:not(.collection) {
     display: none;
 }
 
@@ -157,8 +199,13 @@ div.details hr {
     border: 0;
 }
 
-/* source & series entries */
-/* grid cell size is 185 x 278, TMDb's 'w185' poster size */
+
+/*
+    entries
+    grid layout
+    cell size is 185 x 278, TMDb's 'w185' poster size
+*/
+
 div.entries {
     display: grid;
     grid-template-columns: repeat( auto-fit, 185px );
@@ -192,18 +239,15 @@ div.info h2 {
     margin-top: 0;
     margin-bottom: 0.5em;
 }
-p.title {
-    font-weight: bold;
-}
 .entry.collection {
-    border: 2px solid transparent;
+    border: 1px solid transparent;
     background-color: rgb(32, 32, 64);
 }
 .entry.collection div.info {
     opacity: 1;
 }
 .entry.collection:hover {
-    border: 2px solid white;
+    border: 1px solid white;
 }
 .entry.unknown {
     background-color: rgb(64, 32, 32);
