@@ -111,7 +111,7 @@ class Movie(Entry):
                                       if person['job'] == 'Director'),
             'writers':      ', '.join(person['name'] for person in movie.crew
                                       if person['job']
-                                      in ['Writer', 'Screenplay']),
+                                      in ['Writer', 'Screenplay', 'Author']),
             'actors':       ', '.join(person['name'] for person in movie.cast
                                       if person['order'] < 3),
             'genres':       genres,
@@ -513,7 +513,7 @@ def probe_torrent_folder_movie(name, path):
         return None
     result = results[0]
     for r in results:
-        if r['title'] == title:
+        if r['title'].casefold() == title.casefold():
             result = r
             break
     # return entry
@@ -550,7 +550,7 @@ def probe_torrent_folder_season(name, path):
         return None
     result = results[0]
     for r in results:
-        if r['name'] == name:
+        if r['name'].casefold() == name.casefold():
             result = r
             break
     # return entry
@@ -576,7 +576,7 @@ def probe_processed_file_movie(name, path):
         return None
     result = results[0]
     for r in results:
-        if r['title'] == title:
+        if r['title'].casefold() == title.casefold():
             result = r
             break
     # return entry
@@ -592,7 +592,7 @@ def probe_processed_folder_series(name, path):
         return None
     result = results[0]
     for r in results:
-        if r['name'] == name:
+        if r['name'].casefold() == name.casefold():
             result = r
             break
     # return entry

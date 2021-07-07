@@ -1,17 +1,29 @@
+:root {
+    /* color scheme */
+    --background: rgb(32, 32, 32);
+    --background-active: rgb(64, 64, 64);
+    --background-translucent: rgb(32, 32, 32, 0.5);
+    --background-collection: rgb(32, 32, 64);
+    --background-unknown: rgb(64, 32, 32);
+    --foreground: white;
+    --foreground-visited: rgb(128, 128, 128);
+    --hover: white;
+}
+
 body {
     font-family: 'Trebuchet MS', 'DejaVu Sans', sans-serif;
-    background-color: rgb(32, 32, 32);
-    color: white;
+    background-color: var(--background);
+    color: var(--foreground);
     overflow-y: scroll;
     margin: 0;
 }
 /* body * { outline-style: solid; outline-width: 1px; } */
 html::-webkit-scrollbar {
-    background-color: rgb(32, 32, 32);
+    background-color: var(--background);
     width: 5px;
 }
 html::-webkit-scrollbar-thumb {
-    background-color: rgb(64, 64, 64);
+    background-color: var(--background-active);
 }
 a {
     text-decoration: none;
@@ -44,7 +56,7 @@ nav {
     top: 5px;
     opacity: 0;
     padding: 5px 10px;
-    background-color: rgb(64, 64, 64);
+    background-color: var(--background-active);
     z-index: 2;
 }
 nav.left {
@@ -89,14 +101,14 @@ div.play ul {
 div.play li {
     padding: 5px 20px;
     border: 1px solid transparent;
-    background-color: rgb(64, 64, 64);
+    background-color: var(--background-active);
     margin-bottom: 5px; 
 }
 div.play li:hover {
-    border: 1px solid white;
+    border: 1px solid var(--hover);
 }
 div.play a:visited li {
-    color: rgb(128, 128, 128);
+    color: var(--foreground-visited);
 }
 
 div.genres   {
@@ -113,6 +125,7 @@ div.genres .dropdown {
     right: 0px;
     display: inline-block;
     width: 100%;
+    z-index: 1;
 }
 div.genres label {
     user-select: none;
@@ -123,14 +136,14 @@ div.genres label {
     text-align: center;
 }
 div.genres label:hover {
-    border: 1px solid white;
+    border: 1px solid var(--hover);
 }
 div.genres:hover label,
 div.genres label.placeholder {
     display: block;
 }
 div.genres:hover .dropdown {
-    box-shadow: 1px 1px black, -1px -1px black;
+    outline: 1px solid var(--background-translucent)
 }
 
 div.mediatypes {
@@ -146,13 +159,13 @@ div.mediatypes label {
     text-align: center;
 }
 div.mediatypes label:hover {
-    border: 1px solid white;
+    border: 1px solid var(--hover);
 }
 #Mall:checked ~ div #MLall,
 #Mmovie:checked ~ div #MLmovie,
 #Mseries:checked ~ div #MLseries,
 #Mcollection:checked ~ div #MLcollection {
-        background-color: rgb(64, 64, 64);
+        background-color: var(--background-active);
 }
 #Mmovie:checked ~ div .entry:not(.movie),
 #Mseries:checked ~ div .entry:not(.series, .season),
@@ -202,20 +215,18 @@ div.details hr {
 
 /*
     entries
-    grid layout
-    cell size is 185 x 278, TMDb's 'w185' poster size
+    grid layout with cell size 185 x 278 (TMDb's 'w185' poster size)
 */
 
 div.entries {
     display: grid;
     grid-template-columns: repeat( auto-fit, 185px );
+    grid-auto-rows: 278px;
     margin: 0;
     justify-content: center;
     gap: 10px;
 }
 .entry {
-    width: 185px;
-    height: 278px;
     box-sizing: border-box;
     background-repeat: no-repeat;
     background-position: center center;
@@ -226,7 +237,7 @@ div.info {
     width: 100%;
     height: 100%;
     padding: 10px;
-    background-color: rgb(32, 32, 32, 0.5);
+    background-color: var(--background-translucent);
 }
 div.info h2 {
     font-size: 1.3em;
@@ -241,14 +252,14 @@ div.info h2 {
 }
 .entry.collection {
     border: 1px solid transparent;
-    background-color: rgb(32, 32, 64);
+    background-color: var(--background-collection);
 }
 .entry.collection div.info {
     opacity: 1;
 }
 .entry.collection:hover {
-    border: 1px solid white;
+    border: 1px solid var(--hover);
 }
 .entry.unknown {
-    background-color: rgb(64, 32, 32);
+    background-color: var(--background-unknown);
 }

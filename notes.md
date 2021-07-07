@@ -1,8 +1,12 @@
 # TODO
 
+reintegrate "extra" for director's cut etc.
+
 "everything" meta collection
 
-search-based collection
+search-based collections
+
+store only relative url for posters, use different sizes in cells and in details
 
 
 consolidate repetitive HTML by using Jinja functionality
@@ -13,8 +17,7 @@ semanticize HTML:
 
 logging, ability to filter log messages
 
-streaming
-merge video and subtitles into mkv
+streaming, merge video and subtitles into mkv
 
 music videos? https://imvdb.com/
 

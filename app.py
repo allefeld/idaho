@@ -2,7 +2,6 @@
 
 from flask import Flask, request, render_template
 from werkzeug.exceptions import NotFound
-from jinja2 import environment
 from media import Sources
 
 
