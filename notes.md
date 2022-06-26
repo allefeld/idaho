@@ -6,11 +6,8 @@ reintegrate "extra" for director's cut etc.
 
 search-based collections
 
-store only relative url for posters, use different sizes in cells and in details
-
 
 consolidate repetitive HTML by using Jinja functionality
-move `render`, `render_tile` functionality to `app.py`?
 semanticize HTML:
 -   `<div class="header">` → `<header>`
 -   `<div class="entries">` → `<main>`

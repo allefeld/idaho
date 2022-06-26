@@ -16,7 +16,7 @@
         <a href="javascript:open()" title="open">↦</a>
     </nav>
     <div class="header">
-        {% set url = series.info["poster_url"] %}<img class="poster" src="{{ url }}">
+        {% set url = series.info["poster_url"] %}{% if series.info["number_of_seasons"] > 1 %}<img class="poster" src="http://image.tmdb.org/t/p/w185{{ url }}">{% else %}<img class="poster" src="http://image.tmdb.org/t/p/w342{{ url }}">{% endif %}
         <div class="details">
             <h1 title="{{ series.path }}">
                 {{ series.info["name"] }}{% if series.info["name_en"] %}

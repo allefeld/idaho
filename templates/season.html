@@ -16,7 +16,7 @@
             <a href="javascript:refresh()" title="refresh">⟳</a>
             <a href="javascript:open()" title="open">↦</a>
         </nav>
-        {% set url = season.info["poster_url"] %}<img class="poster" src="{{ url }}">
+        {% set url = season.info["poster_url"] %}<img class="poster" src="http://image.tmdb.org/t/p/w342{{ url }}">
         <div class="details">
             <h1 title="{{ series.path }}">
                 {{ series["name"] }}{% if series["name_en"] %}

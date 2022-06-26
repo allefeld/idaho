@@ -13,7 +13,6 @@ import cfg
 # TMDb configuration
 tmdb.API_KEY = cfg.TMDb_API_key
 search = tmdb.Search()
-IMAGE_BASE_URL = 'http://image.tmdb.org/t/p/w185'
 
 # mapping to unify TMDb's movie and TV genres for filter
 genre_filter_map = {
@@ -118,7 +117,7 @@ class Movie(Entry):
             'runtime':      movie.runtime,
             'countries':    '/'.join(country['iso_3166_1'] for country
                                      in movie.production_countries),
-            'poster_url':   IMAGE_BASE_URL + movie.poster_path,
+            'poster_url':   movie.poster_path,
             'imdb_id':      movie.external_ids()['imdb_id'],
             'vote_average': movie.vote_average
         }
@@ -184,7 +183,7 @@ class Season(Entry):
                 season = s
                 break
         if (season is not None) and (season['poster_path'] is not None):
-            poster_url = IMAGE_BASE_URL + season['poster_path']
+            poster_url = season['poster_path']
         else:
             poster_url = series['poster_url']
         if season is not None:
@@ -202,7 +201,7 @@ class Season(Entry):
             'date':       date,
             'name':       (season['name'] if season is not None
                            else f'Season {self.season_number}'),
-            'poster_url': IMAGE_BASE_URL + poster_url,
+            'poster_url': poster_url,
             'year':       year,
             'series':     series
         }
@@ -262,7 +261,7 @@ def get_series_info(tmdb_id):
                                       in series.production_countries),
         'runtime':           (median(series.episode_run_time)
                               if len(series.episode_run_time) > 0 else '?'),
-        'poster_url':        IMAGE_BASE_URL + series.poster_path,
+        'poster_url':        series.poster_path,
         'imdb_id':           series.external_ids()['imdb_id'],
         'vote_average':      series.vote_average
     }
@@ -549,10 +548,14 @@ def probe_torrent_folder_season(name, path):
     if len(results) == 0:
         return None
     result = results[0]
+    print(result)
     for r in results:
-        if r['name'].casefold() == name.casefold():
+        # It's confusing that in TMDb, series have `name`s,
+        # though movies have `title`s.
+        if r['name'].casefold() == title.casefold():
             result = r
             break
+    print(result)
     # return entry
     return Season(result['id'], season_number, os.path.join(path, name))
 
@@ -664,3 +667,5 @@ def mpv_play(filename, sub_auto_all=False, subs=[]):
     cmd.append(filename)
     print('executing', ' '.join(cmd))
     subprocess.Popen(cmd)
+
+Sources.get()

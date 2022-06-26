@@ -10,7 +10,7 @@
             </a>
         </div>
 {% elif entry.type() == 'Movie' %}{% set movie = entry %}{% set url = movie.info["poster_url"] %}
-        <div class="entry movie" style="background-image: url('{{ url }}')"
+        <div class="entry movie" style="background-image: url('http://image.tmdb.org/t/p/w185{{ url }}')"
                 data-genres="{{ movie.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">
@@ -21,7 +21,7 @@
             </a>
         </div>
 {% elif entry.type() == 'Series' %}{% set series = entry %}{% set url = series.info["poster_url"] %}
-        <div class="entry series" style="background-image: url('{{ url }}')"
+        <div class="entry series" style="background-image: url('http://image.tmdb.org/t/p/w185{{ url }}')"
                 data-genres="{{ series.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">
@@ -32,7 +32,7 @@
             </a>
         </div>
 {% elif entry.type() == 'Season' %}{% set season = entry %}{% set url = season.info["poster_url"] %}
-        <div class="entry season" style="background-image: url('{{ url }}')"
+        <div class="entry season" style="background-image: url('http://image.tmdb.org/t/p/w185{{ url }}')"
                 data-genres="{{ season.filter_genres() | map('gid') | join(' ') }}">
             <a href="{{ name | urlencode }}">
                 <div class="info">{% set series = season.info["series"] %}
